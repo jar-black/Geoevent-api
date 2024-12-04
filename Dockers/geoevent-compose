@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=geoevent
+      - POSTGRES_PASSWORD=geoevent
+      - POSTGRES_DB=geoeventdb
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/home/johan/hobby/GeoEvent/Geoevent-api/data/data
+volumes:
+  db:
+    driver: local
