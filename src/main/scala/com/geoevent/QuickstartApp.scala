@@ -1,5 +1,6 @@
 package com.geoevent
 
+import com.geoevent.database.DbConnection
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
@@ -11,9 +12,9 @@ import scala.util.Success
 
 //#main-class
 object QuickstartApp {
-  //#start-http-server
+  object dbConnection extends DbConnection
+
   private def startHttpServer(routes: Route)(implicit system: ActorSystem[_]): Unit = {
-    // Pekko HTTP still needs a classic ActorSystem to start
     import system.executionContext
 
     val futureBinding = Http().newServerAt("localhost", 8080).bind(routes)
@@ -26,9 +27,9 @@ object QuickstartApp {
         system.terminate()
     }
   }
-  //#start-http-server
+
   def main(args: Array[String]): Unit = {
-    //#server-bootstrapping
+    dbConnection.flywayMigration()
     val rootBehavior = Behaviors.setup[Nothing] { context =>
       val userRegistryActor = context.spawn(UserRegistry(), "UserRegistryActor")
       context.watch(userRegistryActor)
@@ -39,7 +40,6 @@ object QuickstartApp {
       Behaviors.empty
     }
     val system = ActorSystem[Nothing](rootBehavior, "HelloPekkoHttpServer")
-    //#server-bootstrapping
   }
 }
 //#main-class
