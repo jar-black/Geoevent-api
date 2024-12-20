@@ -2,11 +2,11 @@ version: '3.8'
 services:
   db:
     image: postgres:14.1-alpine
+    container_name: geoevent-db
     restart: always
     environment:
-      - POSTGRES_USER=geoevent
-      - POSTGRES_PASSWORD=geoevent
-      - POSTGRES_DB=geoeventdb
+      POSTGRES_PASSWORD: geoevent
+      POSTGRES_DB: geoeventdb
     ports:
       - '5432:5432'
     volumes: 

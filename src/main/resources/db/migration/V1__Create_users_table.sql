@@ -1,6 +1,9 @@
 CREATE TABLE users
 (
-    id    SERIAL PRIMARY KEY,
-    name  VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE
+    id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    phone  VARCHAR(30) NOT NULL,
+    validated BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+ALTER TABLE users ADD CONSTRAINT constraint_name UNIQUE (phone);

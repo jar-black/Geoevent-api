@@ -6,13 +6,13 @@ import org.flywaydb.core.Flyway
 
 trait DbConnection {
   def flywayMigration(): Unit = {
-    val flywayMigration: Flyway = Flyway.configure().dataSource("jdbc:postgresql://localhost:5432/geoevent", "postgres", "postgres").load()
+    val flywayMigration: Flyway = Flyway.configure().dataSource("jdbc:postgresql://localhost:5432/geoeventdb", "geoevent", "geoevent").load()
     flywayMigration.migrate()
   }
   val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
-    "jdbc:postgresql://localhost:5432/geoevent",
-    "postgres",
-    "postgres"
+    "jdbc:postgresql://localhost:5432/geoeventdb",
+    "geoevent",
+    "geoevent"
   )
 }
