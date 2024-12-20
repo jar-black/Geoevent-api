@@ -1,40 +1,59 @@
 package com.geoevent
 
-//#user-registry-actor
-import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
-import scala.collection.immutable
+import cats.effect.unsafe.implicits.global
+import doobie.implicits._
 
-final case class User(name: String, age: Int, countryOfResidence: String)
-final case class Users(users: immutable.Seq[User])
+import java.util.UUID
+import scala.concurrent.Future
+import doobie.implicits._
+import doobie.util.transactor.Transactor
+import cats.effect.IO
+import org.apache.pekko.http.scaladsl.server.Route
 
-object UserRegistry {
-  sealed trait Command
-  final case class GetUsers(replyTo: ActorRef[Users]) extends Command
-  final case class CreateUser(user: User, replyTo: ActorRef[ActionPerformed]) extends Command
-  final case class GetUser(name: String, replyTo: ActorRef[GetUserResponse]) extends Command
-  final case class DeleteUser(name: String, replyTo: ActorRef[ActionPerformed]) extends Command
 
-  final case class GetUserResponse(maybeUser: Option[User])
-  final case class ActionPerformed(description: String)
+trait UserRegistry extends RegistryCalls[User] {
+  def userRoutes: Route
+/*
+  override def _getAll: Future[Seq[User]] = {
+    sql"select * from users".query[User]
+      .to[List]
+      .transact(transactor)
+      .unsafeToFuture()
+  }
+*/
 
-  def apply(): Behavior[Command] = registry(Set.empty)
-
-  private def registry(users: Set[User]): Behavior[Command] =
-    Behaviors.receiveMessage {
-      case GetUsers(replyTo) =>
-        replyTo ! Users(users.toSeq)
-        Behaviors.same
-      case CreateUser(user, replyTo) =>
-        replyTo ! ActionPerformed(s"User ${user.name} created.")
-        registry(users + user)
-      case GetUser(name, replyTo) =>
-        replyTo ! GetUserResponse(users.find(_.name == name))
-        Behaviors.same
-      case DeleteUser(name, replyTo) =>
-        replyTo ! ActionPerformed(s"User $name deleted.")
-        registry(users.filterNot(_.name == name))
+  override def _create(user: User): User = {
+    sql"""INSERT INTO users (id, name, phone, validated) VALUES (${user.id},${user.name},${user.phone},${user.validated})"""
+      .update
+      .run
+      .transact(transactor)
+      .unsafeRunSync() match {
+      case 1 => user
+      case _ => throw new Exception("Error creating user")
     }
+  }
+
+  override def _delete(id: String): Int = {
+    sql"DELETE FROM users WHERE id = $id"
+      .update
+      .run
+      .transact(transactor)
+      .unsafeRunSync()
+  }
+
+  override def _get(id: String): Option[User] = {
+    sql"SELECT * FROM users WHERE id = $id"
+      .query[User]
+      .option
+      .transact(transactor)
+      .unsafeRunSync()
+  }
+
+  override def _update(user: User): Int = {
+    sql"""UPDATE users SET name = ${user.name}, phone = ${user.phone}, validated = ${user.validated} WHERE id = ${user.id}"""
+      .update
+      .run
+      .transact(transactor)
+      .unsafeRunSync()
+  }
 }

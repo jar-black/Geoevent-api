@@ -21,7 +21,7 @@ object QuickstartApp {
     futureBinding.onComplete {
       case Success(binding) =>
         val address = binding.localAddress
-        system.log.info("Server online at http://{}:{}/", address.getHostString, address.getPort)
+        system.log.info(s"Server online at http://${address.getHostString}:${address.getPort}/")
       case Failure(ex) =>
         system.log.error("Failed to bind HTTP endpoint, terminating system", ex)
         system.terminate()
@@ -31,15 +31,9 @@ object QuickstartApp {
   def main(args: Array[String]): Unit = {
     dbConnection.flywayMigration()
     val rootBehavior = Behaviors.setup[Nothing] { context =>
-      val userRegistryActor = context.spawn(UserRegistry(), "UserRegistryActor")
-      context.watch(userRegistryActor)
-
-      val routes = new UserRoutes(userRegistryActor)(context.system)
-      startHttpServer(routes.userRoutes)(context.system)
-
+      startHttpServer(UserCalls.userRoutes)(context.system)
       Behaviors.empty
     }
-    val system = ActorSystem[Nothing](rootBehavior, "HelloPekkoHttpServer")
+    val system = ActorSystem[Nothing](rootBehavior, "GeoEventActorSystem")
   }
 }
-//#main-class
