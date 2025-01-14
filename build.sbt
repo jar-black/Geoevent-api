@@ -8,7 +8,7 @@ lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
       organization := "com.geoevent",
-      scalaVersion := "2.13.15"
+      scalaVersion := "2.12.20"
     )),
     name := "Geoevent-api",
     libraryDependencies ++= Seq(
@@ -21,9 +21,7 @@ lazy val root = (project in file(".")).
       "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion,
       "org.apache.pekko" %% "pekko-stream" % pekkoVersion,
       "ch.qos.logback" % "logback-classic" % "1.5.12",
-      "io.circe" %% "circe-core" % "0.14.10",
-      "io.circe" %% "circe-generic" % "0.14.10",
-      "io.circe" %% "circe-parser" % "0.14.10",
+      "com.github.t3hnar" %% "scala-bcrypt" % "4.3.0",
       "org.apache.pekko" %% "pekko-http-testkit" % pekkoHttpVersion % Test,
       "org.apache.pekko" %% "pekko-actor-testkit-typed" % pekkoVersion % Test,
       "org.scalatest" %% "scalatest" % "3.2.19" % Test
