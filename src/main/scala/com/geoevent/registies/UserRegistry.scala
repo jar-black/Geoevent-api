@@ -28,12 +28,21 @@ trait UserRegistry extends RegistryCalls[User] {
       .unsafeRunSync()
   }
 
-  override def _get(id: String): Option[User] = {
+  override def _get(phone: String): Option[User] = {
+    sql"SELECT * FROM users WHERE phone = $phone"
+      .query[User]
+      .option
+      .transact(transactor)
+      .unsafeRunSync()
+  }
+
+  def getUserById(id: String): Option[User] = {
     sql"SELECT * FROM users WHERE id = $id"
       .query[User]
       .option
       .transact(transactor)
       .unsafeRunSync()
+      .map(_.copy(passwordHash = ""))
   }
 
   override def _update(item: User): Int = {

@@ -34,14 +34,14 @@ class UserRoutesSpec extends AnyWordSpec with Matchers with ScalaFutures with Sc
   val credentials: Credentials = Credentials("phoneNumber", "test_password")
   val credentialsEntity: MessageEntity = Marshal(credentials).to[MessageEntity].futureValue
 
-
-
   "be able to add users (POST /users)" in {
     val user = User(
       id = UUID.randomUUID().toString,
       name = "test_name",
       phone = (new Random).nextInt(100000000).toString,
-      validated = false)
+      passwordHash = "test_password",
+      validated = false
+    )
     val userEntity = Marshal(user).to[MessageEntity].futureValue
 
     val request = Post("/users").withEntity(userEntity)
@@ -54,7 +54,7 @@ class UserRoutesSpec extends AnyWordSpec with Matchers with ScalaFutures with Sc
   }
 
   "get authorization token" in {
-    val request = Post(uri = s"/authorize/$responseId").withEntity(credentialsEntity)
+    val request = Post(uri = s"/auth/$responseId").withEntity(credentialsEntity)
 
     request ~> routes ~> check {
       status should be(StatusCodes.OK)
@@ -78,7 +78,8 @@ class UserRoutesSpec extends AnyWordSpec with Matchers with ScalaFutures with Sc
       id = responseId,
       name = "test_name_updated",
       phone = (new Random).nextInt(100000000).toString,
-      validated = false)
+      validated = false,
+      passwordHash = "test_password")
 
     val userEntity = Marshal(user).to[MessageEntity].futureValue
     val request = Put(uri = s"/users/$responseId").withEntity(userEntity)

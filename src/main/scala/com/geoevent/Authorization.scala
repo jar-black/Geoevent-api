@@ -1,10 +1,11 @@
 package com.geoevent
 
+import com.geoevent.registies.AuthRegistry
 import org.apache.pekko.http.scaladsl.model.{HttpResponse, StatusCodes}
 import org.apache.pekko.http.scaladsl.server.Directive1
 import org.apache.pekko.http.scaladsl.server.Directives.{complete, optionalHeaderValueByName, provide}
 
-object Authorization {
+object Authorization extends AuthRegistry {
   def basicAuth: Directive1[String] = {
     optionalHeaderValueByName("Authorization").flatMap {
       case Some(token) if isValidBasicAuth(token) => provide(token)
@@ -15,9 +16,9 @@ object Authorization {
 
   def authorizeToken: Directive1[String] = {
     optionalHeaderValueByName("Authorization").flatMap {
-      case Some(token) if isValidToken(token) => provide(token)
+      case Some(token) => provide(isValidToken(token).getOrElse("Invalid token"))
       case _ =>
-        complete(HttpResponse(StatusCodes.Unauthorized, entity = "The resource requires basic authentication"))
+        complete(HttpResponse(StatusCodes.Unauthorized, entity = "The resource requires a valid token"))
     }
   }
 
@@ -26,8 +27,13 @@ object Authorization {
     token == "valid-token"
   }
 
-  private def isValidToken(token: String): Boolean = {
-    println(s"Authorize token: $token")
-    token == "valid-token"
+  private def isValidToken(token: String): Option[String] = {
+    token.split(" ").toList match {
+      case "Bearer" :: token :: Nil =>
+        getUserIdFromToken(token).map(userId => {
+          userId
+        })
+      case _ => None
+    }
   }
 }

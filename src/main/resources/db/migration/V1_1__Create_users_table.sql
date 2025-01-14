@@ -7,4 +7,4 @@ CREATE TABLE users
     validated BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-ALTER TABLE users ADD CONSTRAINT constraint_name UNIQUE (phone);
+ALTER TABLE users ADD CONSTRAINT users_constrain UNIQUE (phone);

@@ -22,14 +22,18 @@ object UserCalls extends UserRegistry {
             }
          }
       } ~
-        Authorization.authorizeToken { _ =>
+        Authorization.authorizeToken { userId =>
           path(Segment) { id =>
             get {
-              complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, _get(id).map(_.toJson.compactPrint).getOrElse("User not found")))
+              if(id == userId) {
+                complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, getUserById(id).map(_.toJson.compactPrint).getOrElse("User not found")))
+              } else {
+                complete(StatusCodes.Forbidden, HttpEntity(ContentTypes.`application/json`, ErrorResponse("Not authorized to access this user").toJson.compactPrint))
+              }
             } ~
               delete {
                 complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, _delete(id) match {
-                  case 1 => User(id = id, name = "", phone = "", validated = false).toJson.compactPrint
+                  case 1 => User(id = id, name = "", phone = "", validated = false, passwordHash = "").toJson.compactPrint
                   case _ => ErrorResponse("User not found").toJson.compactPrint
                 }))
               } ~
