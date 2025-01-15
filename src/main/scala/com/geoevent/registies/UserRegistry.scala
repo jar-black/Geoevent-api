@@ -1,7 +1,7 @@
 package com.geoevent.registies
 
 import cats.effect.unsafe.implicits.global
-import com.geoevent.encrypt.Encrypt
+import com.geoevent.encrypt.Hashing
 import com.geoevent.models.UserModel.User
 import doobie.implicits._
 
@@ -9,7 +9,7 @@ import doobie.implicits._
 trait UserRegistry extends RegistryCalls[User] {
 
   override def _create(item: User): User = {
-    val passwordHash = Encrypt.hashPassword(item.passwordHash)
+    val passwordHash = Hashing.hashPassword(item.passwordHash)
     sql"""INSERT INTO users (id, name, phone, password_hash, validated) VALUES (${item.id},${item.name},${item.phone},${passwordHash},${item.validated})"""
       .update
       .run

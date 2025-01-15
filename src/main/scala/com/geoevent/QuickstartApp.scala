@@ -1,17 +1,14 @@
 package com.geoevent
 
 import com.geoevent.database.DbConnection
-import com.geoevent.routes.UserCalls
-import com.geoevent.routes.AuthCalls
-import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.http.scaladsl.Http
-import pekko.http.scaladsl.server.Route
+import com.geoevent.routes.{AuthCalls, GeoStampCalls, UserCalls}
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko.http.scaladsl.Http
 import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.server.Route
 
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 //#main-class
 object QuickstartApp {
@@ -33,7 +30,11 @@ object QuickstartApp {
     DbConnection.flywayMigration()
 
     val rootBehavior = Behaviors.setup[Nothing] { context =>
-      startHttpServer(UserCalls.userRoutes ~ AuthCalls.authorizationRoutes)(context.system)
+      startHttpServer(
+        UserCalls.userRoutes ~
+          AuthCalls.authorizationRoutes ~
+          GeoStampCalls.geoStampsRoutes
+      )(context.system)
       Behaviors.empty
     }
     val system = ActorSystem[Nothing](rootBehavior, "GeoEventActorSystem")

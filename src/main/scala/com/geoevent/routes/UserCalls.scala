@@ -28,7 +28,7 @@ object UserCalls extends UserRegistry {
               if(id == userId) {
                 complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, getUserById(id).map(_.toJson.compactPrint).getOrElse("User not found")))
               } else {
-                complete(StatusCodes.Forbidden, HttpEntity(ContentTypes.`application/json`, ErrorResponse("Not authorized to access this user").toJson.compactPrint))
+                complete(StatusCodes.Forbidden, HttpEntity(ContentTypes.`application/json`, ErrorResponse("Not authorized to access resource").toJson.compactPrint))
               }
             } ~
               delete {

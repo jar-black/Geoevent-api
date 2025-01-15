@@ -1,6 +1,6 @@
 package com.geoevent.routes
 
-import com.geoevent.encrypt.Encrypt
+import com.geoevent.encrypt.Hashing
 import com.geoevent.models.AuthModel._
 import com.geoevent.models.ErrorModels.AuthErrorResponse
 import com.geoevent.registies.{AuthRegistry, UserRegistry}
@@ -17,13 +17,13 @@ object AuthCalls extends AuthRegistry with UserRegistry {
       post {
         entity(as[Credentials]) { cred =>
           _get(cred.phoneNumber).map(user => {
-            if (Encrypt.validateHash(cred.password, user.passwordHash)) {
+            if (Hashing.validateHash(cred.password, user.passwordHash)) {
               getValidToken(user.id).map(auth => complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, auth.toJson.compactPrint)))
                 .getOrElse(complete(AuthErrorResponse("Authorization failed").toJson.compactPrint))
             } else {
               complete(AuthErrorResponse("Authorization failed").toJson.compactPrint)
             }
-          }).getOrElse(complete(AuthErrorResponse("Authorization fai  led").toJson.compactPrint))
+          }).getOrElse(complete(AuthErrorResponse("Authorization failed").toJson.compactPrint))
         }
       }
     }
