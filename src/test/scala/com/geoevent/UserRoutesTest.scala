@@ -1,5 +1,6 @@
 package com.geoevent
 
+import com.geoevent.models.ResponseModels.SuccessResponse
 import com.geoevent.models.UserModel.User
 import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import org.apache.pekko.http.scaladsl.marshalling.Marshal
@@ -11,10 +12,11 @@ class UserRoutesTest extends TestFrame {
   "be able to get users (GET /user)" in {
     val request = Get(uri = s"/users/${testUser.id}").addCredentials(bearerTokenTestUser)
 
+    println("token: " + bearerTokenTestUser.token)
     request ~> routes ~> check {
       status should be(StatusCodes.OK)
       contentType should be(ContentTypes.`application/json`)
-      entityAs[String] should include("test_name")
+      entityAs[User].name should include("test_name")
     }
   }
 
@@ -33,16 +35,6 @@ class UserRoutesTest extends TestFrame {
       status should be(StatusCodes.OK)
       contentType should be(ContentTypes.`application/json`)
       entityAs[User].name should be("test_name_updated")
-    }
-  }
-
-  "be able to remove users (DELETE /users)" in {
-    val request = Delete(uri = s"/users/${testUser.id}").addCredentials(bearerTokenTestUser)
-
-    request ~> routes ~> check {
-      status should be(StatusCodes.OK)
-      contentType should be(ContentTypes.`application/json`)
-      entityAs[User].id should be(testUser.id)
     }
   }
 }

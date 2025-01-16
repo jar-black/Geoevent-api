@@ -5,6 +5,8 @@ import com.geoevent.encrypt.Hashing
 import com.geoevent.models.UserModel.User
 import doobie.implicits._
 
+import java.util.UUID
+
 
 trait UserRegistry extends RegistryCalls[User] {
 
