@@ -3,8 +3,9 @@ package com.geoevent.registies
 import cats.effect.unsafe.implicits.global
 import com.geoevent.models.GeoStampModel._
 import doobie.implicits._
-
 import doobie.implicits.javasql._
+
+import java.util.UUID
 
 class GeoStampRegistry extends RegistryCalls[GeoStamp] {
   override def _create(geoStamp: GeoStamp): GeoStamp = {
@@ -19,8 +20,8 @@ class GeoStampRegistry extends RegistryCalls[GeoStamp] {
     }
   }
 
-  override def _delete(id: String): Int = {
-    sql"DELETE FROM geo_stamps WHERE id = $id"
+  def _delete(id: String, userId: String): Int = {
+    sql"DELETE FROM geo_stamps WHERE id = $id AND user_id = $userId"
       .update
       .run
       .transact(transactor)
@@ -47,4 +48,6 @@ class GeoStampRegistry extends RegistryCalls[GeoStamp] {
     println("Not implemented")
     1
   }
+
+  override def _delete(id: String): Int = ???
 }

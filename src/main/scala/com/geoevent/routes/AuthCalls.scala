@@ -2,7 +2,7 @@ package com.geoevent.routes
 
 import com.geoevent.encrypt.Hashing
 import com.geoevent.models.AuthModel._
-import com.geoevent.models.ErrorModels.AuthErrorResponse
+import com.geoevent.models.ResponseModels.AuthErrorResponse
 import com.geoevent.registies.{AuthRegistry, UserRegistry}
 import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}

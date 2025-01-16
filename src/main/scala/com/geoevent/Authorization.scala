@@ -6,6 +6,7 @@ import org.apache.pekko.http.scaladsl.server.Directive1
 import org.apache.pekko.http.scaladsl.server.Directives.{complete, optionalHeaderValueByName, provide}
 
 object Authorization extends AuthRegistry {
+/*
   def basicAuth: Directive1[String] = {
     optionalHeaderValueByName("Authorization").flatMap {
       case Some(token) if isValidBasicAuth(token) => provide(token)
@@ -13,6 +14,7 @@ object Authorization extends AuthRegistry {
         complete(HttpResponse(StatusCodes.Unauthorized, entity = "The resource requires basic authentication"))
     }
   }
+*/
 
   def authorizeToken: Directive1[String] = {
     optionalHeaderValueByName("Authorization").flatMap {
@@ -22,10 +24,12 @@ object Authorization extends AuthRegistry {
     }
   }
 
+/*
   private def isValidBasicAuth(token: String): Boolean = {
     println(s"Basic auth token: $token")
     token == "valid-token"
   }
+*/
 
   private def isValidToken(token: String): Option[String] = {
     token.split(" ").toList match {
