@@ -26,7 +26,6 @@ object UserCalls extends UserRegistry {
       } ~
         Authorization.authorizeToken { userId =>
           path(Segment) { id =>
-            println(s"$id == $userId")
             get {
               if (id == userId) {
                 complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, getUserById(id).map(_.toJson.compactPrint).getOrElse("User not found")))

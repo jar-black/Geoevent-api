@@ -3,7 +3,7 @@ package com.geoevent
 import com.geoevent.models.AuthModel._
 import com.geoevent.models.ResponseModels.SuccessResponse
 import com.geoevent.models.UserModel.User
-import com.geoevent.routes.{AuthCalls, GeoEventRoutes, GeoStampCalls, UserCalls}
+import com.geoevent.routes.{AuthCalls, ChatMessageRoutes, GeoEventRoutes, GeoStampCalls, UserCalls}
 import org.apache.pekko
 import org.apache.pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import org.apache.pekko.actor.typed.ActorSystem
@@ -29,7 +29,8 @@ trait TestFrame extends AnyWordSpec with Matchers with ScalaFutures with Scalate
   val routes: Route = UserCalls.userRoutes ~
     AuthCalls.authorizationRoutes ~
     GeoStampCalls.geoStampRoutes ~
-    GeoEventRoutes.geoEventRoutes
+    GeoEventRoutes.geoEventRoutes ~
+    ChatMessageRoutes.chatMessageRoutes
 
   private val phoneNumber: String = (new Random).nextInt(100000000).toString
   private val credentials: Credentials = Credentials(phoneNumber, "test_password")
@@ -77,8 +78,6 @@ trait TestFrame extends AnyWordSpec with Matchers with ScalaFutures with Scalate
       contentType should be(ContentTypes.`application/json`)
       entityAs[User]
     }
-    println(testUser)
-
     val reqAuth = Post("/auth").withEntity(credentialsEntity)
 
     bearerTokenTestUser = reqAuth ~> routes ~> check {

@@ -4,7 +4,6 @@ import com.geoevent.Authorization
 import com.geoevent.models.GeoEventModel.GeoEvent
 import com.geoevent.models.ResponseModels.{ErrorResponse, SuccessResponse}
 import com.geoevent.registies.GeoEventRegistry
-import com.geoevent.routes.GeoStampCalls._delete
 import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import org.apache.pekko.http.scaladsl.server.Directives._

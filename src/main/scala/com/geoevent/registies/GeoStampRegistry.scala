@@ -9,8 +9,8 @@ import java.util.UUID
 
 class GeoStampRegistry extends RegistryCalls[GeoStamp] {
   override def _create(geoStamp: GeoStamp): GeoStamp = {
-    sql"""INSERT INTO geo_stamps (id, user_id, latitude, longitude, timestamp)
-         VALUES (${geoStamp.id},${geoStamp.userId},${geoStamp.latitude},${geoStamp.longitude},CURRENT_TIMESTAMP)"""
+    sql"""INSERT INTO geo_stamps (id, user_id, latitude, longitude, timestamp, geoevent_id)
+         VALUES (${geoStamp.id},${geoStamp.userId},${geoStamp.latitude},${geoStamp.longitude},CURRENT_TIMESTAMP, ${geoStamp.geoEventId.orNull})"""
       .update
       .run
       .transact(transactor)
@@ -44,10 +44,14 @@ class GeoStampRegistry extends RegistryCalls[GeoStamp] {
       .unsafeRunSync()
   }
 
-  override def _update(geoStamp: GeoStamp): Int = {
-    println("Not implemented")
-    1
+  def updateEventId(id:String, eventId: Option[String])   = {
+    sql"""UPDATE geo_stamps SET geoevent_id = ${eventId.orNull} WHERE id = $id"""
+      .update
+      .run
+      .transact(transactor)
+      .unsafeRunSync()
   }
 
   override def _delete(id: String): Int = ???
+  override def _update(item: GeoStamp): Int = ???
 }
