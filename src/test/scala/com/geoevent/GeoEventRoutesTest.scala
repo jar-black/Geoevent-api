@@ -59,5 +59,4 @@ class GeoEventRoutesTest extends TestFrame {
       entityAs[SuccessResponse].successMsg should be("Successfully deleted GeoEvent")
     }
   }
-
 }

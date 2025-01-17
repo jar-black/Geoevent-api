@@ -1,7 +1,8 @@
 package com.geoevent
 
 import com.geoevent.database.DbConnection
-import com.geoevent.routes.{AuthCalls, GeoEventRoutes, GeoStampCalls, UserCalls}
+import com.geoevent.models.ChatMessageModel.ChatMessage
+import com.geoevent.routes.{AuthCalls, ChatMessageRoutes, GeoEventRoutes, GeoStampCalls, UserCalls}
 import org.apache.pekko.actor.typed.ActorSystem
 import org.apache.pekko.actor.typed.scaladsl.Behaviors
 import org.apache.pekko.http.scaladsl.Http
@@ -34,7 +35,8 @@ object QuickstartApp {
         UserCalls.userRoutes ~
           AuthCalls.authorizationRoutes ~
           GeoStampCalls.geoStampRoutes ~
-          GeoEventRoutes.geoEventRoutes
+          GeoEventRoutes.geoEventRoutes ~
+          ChatMessageRoutes.chatMessageRoutes
       )(context.system)
       Behaviors.empty
     }

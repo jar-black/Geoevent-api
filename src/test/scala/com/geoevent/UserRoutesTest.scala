@@ -1,6 +1,5 @@
 package com.geoevent
 
-import com.geoevent.models.ResponseModels.SuccessResponse
 import com.geoevent.models.UserModel.User
 import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import org.apache.pekko.http.scaladsl.marshalling.Marshal

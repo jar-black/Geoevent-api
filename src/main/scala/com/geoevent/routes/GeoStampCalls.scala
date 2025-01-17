@@ -38,6 +38,14 @@ object GeoStampCalls extends GeoStampRegistry {
                   case 1 => complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, SuccessResponse("Successfully deleted GeoStamp").toJson.compactPrint))
                   case _ => complete(StatusCodes.NotFound, HttpEntity(ContentTypes.`application/json`, ErrorResponse("GeoStamp not found").toJson.compactPrint))
                 }
+              } ~
+              put {
+                entity(as[GeoStamp]) { geostamp =>
+                  updateEventId(geostamp.id, geostamp.geoEventId) match {
+                    case 1 => complete(StatusCodes.OK, HttpEntity(ContentTypes.`application/json`, SuccessResponse("Successfully updated GeoStamp").toJson.compactPrint))
+                    case _ => complete(StatusCodes.NotFound, HttpEntity(ContentTypes.`application/json`, ErrorResponse("GeoStamp not found").toJson.compactPrint))
+                  }
+                }
               }
           }
       }
