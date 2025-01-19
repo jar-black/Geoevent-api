@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  api:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: geoevent
+    networks:
+      fullstack:
+        ipv4_address: "192.168.10.11"
+    restart: always
+    ports:
+      - '8081:8081'
+    depends_on:
+        - postgres
+  postgres:
+    container_name: postgres
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=geoevent
+      - POSTGRES_PASSWORD=geoevent
+      - POSTGRES_DB=geoeventdb
+    restart: always
+    networks:
+      fullstack:
+        ipv4_address: "192.168.10.12"
+    volumes:
+      - postgres:/home/johan/hobby/GeoEvent/Geoevent-api/data/data
+volumes:
+  postgres:
+    driver: local
+networks:
+  fullstack:
+    ipam:
+      config:
+          - subnet: "192.168.10.0/24"
