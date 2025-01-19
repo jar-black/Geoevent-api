@@ -13,11 +13,11 @@ RUN mkdir /working/ && \
     rm -r /working/ && \
     sbt sbtVersion
 
-RUN git clone https://github.com/jar-black/Geoevent-api.git
+RUN mkdir app
 
-RUN cd Geoevent-api
+WORKDIR /app
 
-WORKDIR /Geoevent-api
+ADD /../ /app
 
 RUN sbt compile
 
