@@ -1,0 +1,40 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: 
+      - 'main'
+      - 'master'
+
+jobs:
+  pr-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'sbt'
+      
+      - name: Run tests
+        run: sbt test
+      
+      - name: Compile project
+        run: sbt compile
+      
+      - name: Check OpenAPI Specification
+        run: sbt "project root" "runMain com.geoevent.OpenAPISpecTest"
+      
+      - name: Code Style Check
+        run: sbt scalastyle
+      
+      - name: Security Scan
+        uses: anchore/scan-action@v3
+        with:
+          path: "."
+          fail-build: false
+          severity-cutoff: high
