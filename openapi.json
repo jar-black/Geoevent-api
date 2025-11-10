@@ -59,10 +59,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["name", "phoneNumber", "password"],
                 "properties": {
-                  "id": {"type": "string"},
+                  "name": {"type": "string"},
                   "phoneNumber": {"type": "string"},
-                  "name": {"type": "string"}
+                  "password": {"type": "string", "format": "password"}
                 }
               }
             }

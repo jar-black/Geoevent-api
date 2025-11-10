@@ -2,7 +2,7 @@ package com.geoevent.routes
 
 import com.geoevent.Authorization
 import com.geoevent.models.ResponseModels.{ErrorResponse, SuccessResponse}
-import com.geoevent.models.UserModel.User
+import com.geoevent.models.UserModel.{User, UserRegistration}
 import com.geoevent.registies.UserRegistry
 import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
@@ -19,8 +19,16 @@ object UserCalls extends UserRegistry {
     pathPrefix("users") {
       pathEnd {
         post {
-          entity(as[User]) { user =>
-            complete(StatusCodes.Created, HttpEntity(ContentTypes.`application/json`, _create(user.copy(id = UUID.randomUUID.toString)).toJson.compactPrint))
+          entity(as[UserRegistration]) { registration =>
+            // Create User object with password in passwordHash field (will be hashed in registry)
+            val user = User(
+              id = UUID.randomUUID.toString,
+              name = registration.name,
+              phone = registration.phoneNumber,
+              passwordHash = registration.password, // Plain password - will be hashed by _create
+              validated = false
+            )
+            complete(StatusCodes.Created, HttpEntity(ContentTypes.`application/json`, _create(user).toJson.compactPrint))
           }
         }
       } ~
