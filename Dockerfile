@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:17
 ARG SBT_VERSION=1.9.9
 
 RUN mkdir /working/ && \
