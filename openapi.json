@@ -15,6 +15,7 @@
       "post": {
         "summary": "User Authentication",
         "description": "Authenticate user with phone number and password",
+        "security": [],
         "requestBody": {
           "required": true,
           "content": {
@@ -53,6 +54,7 @@
       "post": {
         "summary": "Create User",
         "description": "Create a new user account",
+        "security": [],
         "requestBody": {
           "required": true,
           "content": {
