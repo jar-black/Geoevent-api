@@ -72,6 +72,12 @@
         "responses": {
           "201": {
             "description": "User created successfully"
+          },
+          "400": {
+            "description": "Bad request - invalid input data"
+          },
+          "409": {
+            "description": "Conflict - user already exists"
           }
         }
       }
