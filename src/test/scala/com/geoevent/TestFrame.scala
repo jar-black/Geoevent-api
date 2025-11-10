@@ -2,7 +2,7 @@ package com.geoevent
 
 import com.geoevent.models.AuthModel._
 import com.geoevent.models.ResponseModels.SuccessResponse
-import com.geoevent.models.UserModel.User
+import com.geoevent.models.UserModel.{User, UserRegistration}
 import com.geoevent.routes.{AuthCalls, ChatMessageRoutes, GeoEventRoutes, GeoStampCalls, UserCalls}
 import org.apache.pekko
 import org.apache.pekko.actor.testkit.typed.scaladsl.ActorTestKit
@@ -63,14 +63,12 @@ trait TestFrame extends AnyWordSpec with Matchers with ScalaFutures with Scalate
   }
 
   private def createTestUser(): Unit = {
-    val newUser = User(
-      id = "any",
+    val registration = UserRegistration(
       name = "test_name",
-      phone = phoneNumber,
-      passwordHash = "test_password",
-      validated = false
+      phoneNumber = phoneNumber,
+      password = "test_password"
     )
-    val userEntity = Marshal(newUser).to[MessageEntity].futureValue
+    val userEntity = Marshal(registration).to[MessageEntity].futureValue
     val reqUser = Post("/users").withEntity(userEntity)
 
     testUser = reqUser ~> routes ~> check {

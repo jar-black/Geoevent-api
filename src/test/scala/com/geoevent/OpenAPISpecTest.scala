@@ -9,7 +9,7 @@ import scala.io.Source
 class OpenAPISpecTest extends AnyFlatSpec with Matchers {
 
   // Load OpenAPI specification
-  val openAPISpecFile = new File("/home/johan/dev/Geoevent-api/openapi.json")
+  val openAPISpecFile = new File("openapi.json")
   val openAPISpecSource = Source.fromFile(openAPISpecFile)
   val openAPISpecJson = try {
     openAPISpecSource.mkString.parseJson.asJsObject
